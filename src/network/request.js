@@ -16,7 +16,7 @@ export function request(config) {
       })
 
       // 2.2 相应拦截
-      instance.interceptors.request.use(res => {
+      instance.interceptors.response.use(res => {
         return res.data
       }, err => {
 
