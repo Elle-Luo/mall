@@ -6,8 +6,12 @@
     <home-swiper :banners="banners"></home-swiper>
     <home-recommend-view :recommends="recommends"></home-recommend-view>
     <home-feature-view></home-feature-view>
-    <tab-control :titles="titles" class="tabcontrol"></tab-control>
-    <goods-list :goods="goods['pop'].list"></goods-list>
+    <tab-control
+      :titles="titles"
+      class="tabcontrol"
+      @tabClick="tabClick"
+    ></tab-control>
+    <goods-list :goods="showGoods"></goods-list>
     <ui>
       <li>列表</li>
       <li>列表</li>
@@ -132,7 +136,7 @@ export default {
     HomeFeatureView,
     NavBar,
     TabControl,
-    GoodsList
+    GoodsList,
   },
   data() {
     return {
@@ -153,17 +157,43 @@ export default {
           list: [],
         },
       },
+      currentType: "pop",
     };
+  },
+  computed: {
+    showGoods() {
+      return this.goods[this.currentType].list;
+    },
   },
   created() {
     // 1. 请求多个数据
     this.getHomeMultidata();
     // 2.请求商品数据
-    this.getHomeGoods('pop');
-    this.getHomeGoods('new');
-    this.getHomeGoods('sell');
+    this.getHomeGoods("pop");
+    this.getHomeGoods("new");
+    this.getHomeGoods("sell");
   },
   methods: {
+    /* 
+  事件监听相关方法
+*/
+    tabClick(index) {
+      console.log(index);
+      switch (index) {
+        case 0:
+          this.currentType = "pop";
+          break;
+        case 1:
+          this.currentType = "new";
+          break;
+        case 2:
+          this.currentType = "sell";
+          break;
+      }
+    },
+    /* 
+      网络请求相关代码 
+    */
     getHomeMultidata() {
       getHomeMultidata().then((res) => {
         console.log(res);
@@ -172,11 +202,11 @@ export default {
       });
     },
     getHomeGoods(type) {
-      const page = this.goods[type].page + 1
+      const page = this.goods[type].page + 1;
       getHomeGoods(type, page).then((res) => {
         console.log(res);
-        this.goods[type].list.push(...res.data.list)
-        this.goods[type].page += 1
+        this.goods[type].list.push(...res.data.list);
+        this.goods[type].page += 1;
       });
     },
   },
