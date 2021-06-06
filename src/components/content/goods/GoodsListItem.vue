@@ -1,6 +1,6 @@
 <template>
   <div class="goods-item">
-    <img :src="goodsItem.show.img" alt="" @load="imageLoad"><!-- vue中监听Load函数就可以知道图片加载完成 -->
+    <img :src="goodsItem.show.img" alt="" @load="imageLoad"><!-- vue中监听load函数就可以知道图片加载完成 -->
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">

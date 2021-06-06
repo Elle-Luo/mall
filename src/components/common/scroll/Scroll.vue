@@ -16,10 +16,10 @@ export default {
       type: Number,
       default: 0
     },
-    // pullUpLoad: {
-    //   type: Boolean,
-    //   default: false
-    // }
+    pullUpLoad: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -33,20 +33,22 @@ export default {
       click: true,
       // probeType: 3 这个值不要写死
       probeType: this.probeType,
+      // 监听滚到底部
       pullUpLoad: this.pullUpLoad
     });
     // 2.监听滚动的位置
-    this.scroll.on('scroll', (position) => {
+    if(this.probeType === 2 || this.probeType === 3) {
+      this.scroll.on('scroll', (position) => {
       // console.log(position);
       this.$emit('scroll', position)
     })
+    }
     // 3.监听上拉事件
-    // this.scroll.on('pullingUp', () => {
-    //   this.$emit('pullup')
-    // })
-    console.log(this.scroll);
-
-    this.scroll.refresh()
+    if(this.pullUpLoad) {
+      this.scroll.on('pullingUp', () => {
+      this.$emit('pullup')
+    })
+    }
   },
 };
 </script>

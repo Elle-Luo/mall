@@ -8,14 +8,16 @@
       ref="scroll"
       :probe-type="3"
       @scroll="contentScroll"
+      :pull-up-load="true"
+      @pullup="loadMore"
     >
-      <home-swiper :banners="banners"></home-swiper>
+      <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad"></home-swiper>
       <home-recommend-view :recommends="recommends"></home-recommend-view>
       <home-feature-view></home-feature-view>
       <tab-control
         :titles="titles"
-        class="tabcontrol"
         @tabClick="tabClick"
+        ref="tabControl"
       ></tab-control>
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
@@ -70,6 +72,8 @@ export default {
       },
       currentType: "pop",
       isShowBackTop: false,
+      tabOffsetTop: 0,
+      saveY: 0
     };
   },
   computed: {
@@ -84,15 +88,29 @@ export default {
     this.getHomeGoods("pop");
     this.getHomeGoods("new");
     this.getHomeGoods("sell");
+  },
+  mounted() {
     // 监听item中图片加载完成
-    this.$bus.$on('itemImageLoad', () => {
-      this.$refs.scroll.scroll.refresh()
-    })
+    this.$bus.$on("itemImageLoad", () => {
+      this.$refs.scroll.scroll.refresh();
+    });
+    // 获取tabControl的offsetTop
+    // 所有的组件都有一个属性叫$el, 用于获取组件的元素
+  },
+  destroyed() {
+    console.log('homedes');
+  },
+  activated() {
+    this.$refs.scroll.scroll.scrollTo(0, this.saveY, 0)
+    this.$refs.scroll.srcoll.refresh()
+  },
+  deactivated() {
+    this.saveY = this.$refs.scroll.scroll.y
   },
   methods: {
     /* 
-  事件监听相关方法
-*/
+      事件监听相关方法
+    */
     tabClick(index) {
       console.log(index);
       switch (index) {
@@ -111,11 +129,19 @@ export default {
       this.$refs.scroll.scroll.scrollTo(0, 0, 500);
     },
     contentScroll(position) {
+      // 判断Backtop是否显示
       this.isShowBackTop = -position.y > 1000;
+      // 决定tabControl是否吸顶(position: fixed)
+      this.isTabFixed = (-position.y) > this.tabOffsetTop
     },
-    // loadMore() {
-    //   this.getHomeGoods(this.currentType);
-    // },
+    loadMore() {
+      // 加载更多
+      this.getHomeGoods(this.currentType);
+    },
+    swiperImageLoad() {
+      console.log(this.$refs.tabControl.$el.offsetTop);
+      this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
+    },
     /* 
       网络请求相关代码 
     */
@@ -133,8 +159,8 @@ export default {
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
 
-        // 调一次finishPullUp方法才会进行下一次 
-        // this.$refs.scroll.scroll.finishPullUp();
+        // scroll默认加载一次，必须调一次finishPullUp方法才会进行下一次
+        this.$refs.scroll.scroll.finishPullUp();
       });
     },
   },
@@ -155,11 +181,6 @@ export default {
   left: 0;
   right: 0;
   top: 0;
-  z-index: 9;
-}
-.tabcontrol {
-  position: sticky;
-  top: 44px;
   z-index: 9;
 }
 .content {
