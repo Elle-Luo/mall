@@ -97,9 +97,6 @@ export default {
     // 获取tabControl的offsetTop
     // 所有的组件都有一个属性叫$el, 用于获取组件的元素
   },
-  destroyed() {
-    console.log('homedes');
-  },
   activated() {
     this.$refs.scroll.scroll.scrollTo(0, this.saveY, 0)
     this.$refs.scroll.srcoll.refresh()
