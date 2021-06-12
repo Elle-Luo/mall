@@ -6,6 +6,7 @@ const Home = () => import('pages/home/Home')
 const Category = () => import('pages/category/Category')
 const Cart = () => import('pages/cart/Cart')
 const Profile = () => import('pages/profile/Profile')
+const Detail = () => import('pages/detail/Detail')
 // 安装插件
 Vue.use(VueRouter)
 // 创建router
@@ -28,6 +29,10 @@ const routes = [{
   {
     path: '/profile',
     component: Profile
+  },
+  {
+    path: '/detail/:id',
+    component: Detail
   }
 ]
 const router = new VueRouter({

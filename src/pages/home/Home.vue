@@ -99,7 +99,7 @@ export default {
   },
   activated() {
     this.$refs.scroll.scroll.scrollTo(0, this.saveY, 0)
-    this.$refs.scroll.srcoll.refresh()
+    this.$refs.scroll.scroll.refresh()
   },
   deactivated() {
     this.saveY = this.$refs.scroll.scroll.y

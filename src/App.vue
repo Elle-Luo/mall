@@ -4,7 +4,7 @@
     <!-- 2.让home中的内容保持原来的位置  离开时，保存
     一个位置信息saveY 回来时将位置设置为原来保存的位置信息 -->
 
-    <keep-alive>
+    <keep-alive exclude="Detail">
       <router-view></router-view>
     </keep-alive>
     <main-tab-bar></main-tab-bar>
