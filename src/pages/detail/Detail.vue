@@ -39,7 +39,7 @@ export default {
     };
   },
   created() {
-    // 1.保存传入的iid
+    // 1.保存传入的iid this.$route表示当前处于活跃状态的路由
     this.iid = this.$route.params.id;
 
     // 2.根据iid请求详情数据
