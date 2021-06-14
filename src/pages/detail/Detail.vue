@@ -6,6 +6,9 @@
       <detail-base-info :goods="goods"></detail-base-info>
       <detail-shop-info :shop="shop"></detail-shop-info>
       <detail-goods-info :detail-info="detailInfo" @imageLoad="imageLoad"></detail-goods-info>
+      <detail-params-info :item-params="itemParams"></detail-params-info>
+      <detail-comment-info :comment="commentInfo"></detail-comment-info>
+      <goods-list :goods="recommends"></goods-list>
     </scroll>
   </div>
 </template>
@@ -16,8 +19,11 @@ import DetailSwiper from "./childComponents/DetailSwiper";
 import DetailBaseInfo from "./childComponents/DetailBaseInfo";
 import DetailShopInfo from "./childComponents/DetailShopInfo";
 import Scroll from "components/common/scroll/Scroll";
-import DetailGoodsInfo from './childComponents/DetailGoodsInfo'
-import { getDetail, Goods, Shop } from "network/detail";
+import DetailGoodsInfo from './childComponents/DetailGoodsInfo';
+import DetailParamsInfo from './childComponents/DetailParamsInfo';
+import DetailCommentInfo from './childComponents/DetailCommentInfo';
+import GoodsList from 'components/content/goods/GoodsList';
+import { getDetail, Goods, Shop, getRecommend } from "network/detail";
 
 export default {
   name: "Detail",
@@ -27,7 +33,11 @@ export default {
     DetailBaseInfo,
     DetailShopInfo,
     Scroll,
-    DetailGoodsInfo
+    DetailGoodsInfo,
+    DetailParamsInfo,
+    DetailCommentInfo,
+    getRecommend,
+    GoodsList
   },
   data() {
     return {
@@ -35,10 +45,14 @@ export default {
       topImages: [],
       goods: {},
       shop: {},
-      detailInfo: {}
+      detailInfo: {},
+      itemParams: {},
+      commentInfo: {},
+      recommends: []
     };
   },
   created() {
+    console.log(this.$route);
     // 1.保存传入的iid this.$route表示当前处于活跃状态的路由
     this.iid = this.$route.params.id;
 
@@ -59,7 +73,21 @@ export default {
 
       // 详情展示
       this.detailInfo = data.detailInfo;
+
+      // 参数信息
+      this.itemParams = data.itemParams;
+
+      // 评论信息
+      if(data.rate.cRate !==0 ) {
+      this.commentInfo = data.rate.list[0];
+      }
     });
+
+    //3. 请求推荐数据
+    getRecommend().then(res => {
+      console.log(res);
+      this.recommends = res.data.list;
+    })
   },
   methods: {
     imageLoad() {

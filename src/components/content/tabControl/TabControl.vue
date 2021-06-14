@@ -3,7 +3,8 @@
     <div v-for="(item, index) in titles" 
       class="tabcontrol__item" 
       :class="{active: index === currentIndex}"
-      @click="itemClick(index)">
+      @click="itemClick(index)"
+      :key="index">
       <span>{{ item }}</span>
     </div>
   </div>

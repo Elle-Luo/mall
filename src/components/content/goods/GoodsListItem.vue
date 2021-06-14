@@ -1,6 +1,6 @@
 <template>
   <div class="goods-item" @click="itemClick">
-    <img :src="goodsItem.show.img" alt="" @load="imageLoad"><!-- vue中监听load函数就可以知道图片加载完成 -->
+    <img :src="showImage" alt="" @load="imageLoad"><!-- vue中监听load函数就可以知道图片加载完成 -->
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">
@@ -22,6 +22,11 @@ export default {
         return {}
       }
     },
+  },
+  computed: {
+    showImage() {
+      return this.goodsItem.image || this.goodsItem.show.img
+    }
   },
   methods: {
     imageLoad() {
